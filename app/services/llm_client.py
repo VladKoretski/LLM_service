@@ -1,4 +1,3 @@
-import logging
 import httpx
 import base64
 from tenacity import retry, stop_after_attempt, wait_exponential
