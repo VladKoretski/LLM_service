@@ -1,4 +1,3 @@
-# test_gigachat_auth.py
 import asyncio
 import httpx
 import base64
