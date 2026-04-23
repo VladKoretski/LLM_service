@@ -1,7 +1,5 @@
 # End-to-End LLM Service
 
-[![CI Pipeline](https://github.com/VladKoretski/LLM_service/actions/workflows/ci.yml/badge.svg)](https://github.com/VladKoretski/LLM_service/actions/workflows/ci.yml)
-
 Production-like микросервис для обработки текста с использованием LLM (GigaChat-совместимый). Реализует суммаризацию/генерацию ответов, кеширование с TTL, обработку ошибок, CI-пайплайн и безопасное управление конфигурацией.
 
 ## Пользовательский сценарий
