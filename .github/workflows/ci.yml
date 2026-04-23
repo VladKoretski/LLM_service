@@ -30,4 +30,4 @@ jobs:
           LLM_TIMEOUT: 30
           CACHE_TTL_SECONDS: 300
           LOG_LEVEL: WARNING  # Чтобы не спамить логами в CI
-        run: pytest tests/ -v
+          run: pytest tests/ -v
