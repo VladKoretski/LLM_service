@@ -1,9 +1,7 @@
-# tests/test_routes.py
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, AsyncMock
 from app.main import app
-from app.services.llm_client import FALLBACK_RESPONSE
 
 client = TestClient(app)
 
