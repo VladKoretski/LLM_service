@@ -112,10 +112,9 @@ Swagger UI доступен по адресу: `http://localhost:8000/docs`
 ## Демонстрация работы
 *(Замените эти плейсхолдеры на реальные скриншоты перед отправкой)*
 
-![Swagger UI]([docs/swagger_success.png](https://github.com/VladKoretski/LLM_service/blob/main/docs/swaggerPost.png))  
-![Fallback ответ](docs/fallback_response.png)
-![Логи кеша](docs/logs_cache.png)
-
-
+![Swagger UI](https://github.com/VladKoretski/LLM_service/blob/main/docs/swaggerPost.png)  
+![Fallback ответ](https://github.com/VladKoretski/LLM_service/blob/main/docs/logCash.png)  
+![Логи кеша](https://github.com/VladKoretski/LLM_service/blob/main/docs/logCash.png)  
+  
 ## Лицензия
 MIT. Образовательный проект.
