@@ -1,4 +1,3 @@
-import logging
 from app.services.cache import SimpleCache
 from app.services.llm_client import call_llm, FALLBACK_RESPONSE
 from app.core.logging import logger
