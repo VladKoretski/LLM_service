@@ -20,6 +20,14 @@ jobs:
           pip install -r requirements.txt
       - name: Lint with Ruff
         run: ruff check .
-      - name: Run tests
-        env: { LLM_API_KEY: fake_ci_key_for_tests }
+            - name: Run tests
+        env:
+          # Фиктивные значения для тестов (реальные запросы не делаются)
+          GIGACHAT_CLIENT_ID: test-client-id
+          GIGACHAT_CLIENT_SECRET: test-client-secret
+          GIGACHAT_SCOPE: GIGACHAT_API_PERS
+          LLM_MODEL: GigaChat:latest
+          LLM_TIMEOUT: 30
+          CACHE_TTL_SECONDS: 300
+          LOG_LEVEL: WARNING  # Чтобы не спамить логами в CI
         run: pytest tests/ -v
