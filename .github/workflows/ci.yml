@@ -9,25 +9,36 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
-        with: { python-version: '3.10' }
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
       - name: Lint with Ruff
         run: ruff check .
-            - name: Run tests
+
+      - name: Run tests with Pytest
         env:
-          # Фиктивные значения для тестов (реальные запросы не делаются)
+          # === Mock GigaChat credentials for tests ===
           GIGACHAT_CLIENT_ID: test-client-id
           GIGACHAT_CLIENT_SECRET: test-client-secret
           GIGACHAT_SCOPE: GIGACHAT_API_PERS
+          GIGACHAT_BASE_URL: https://gigachat.devices.sberbank.ru/api/v1
+          
+          # === App settings ===
           LLM_MODEL: GigaChat:latest
           LLM_TIMEOUT: 30
           CACHE_TTL_SECONDS: 300
-          LOG_LEVEL: WARNING  # Чтобы не спамить логами в CI
-          run: pytest tests/ -v
+          LOG_LEVEL: WARNING  # Reduce noise in CI logs
+        run: pytest tests/ -v --tb=short
