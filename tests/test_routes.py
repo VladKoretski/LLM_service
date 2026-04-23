@@ -1,27 +1,43 @@
+# tests/test_routes.py
 import pytest
 from fastapi.testclient import TestClient
 from unittest.mock import patch, AsyncMock
 from app.main import app
+from app.services.llm_client import FALLBACK_RESPONSE
 
 client = TestClient(app)
 
-@pytest.fixture
-def mock_llm():
-    with patch("app.services.llm_client.call_llm", new_callable=AsyncMock) as m:
-        m.return_value = "Краткая суммаризация тестового текста."
-        yield m
+@pytest.mark.asyncio
+async def test_valid_request():
+    """Тест успешного запроса с моком call_llm"""
+    # Патчим там, где функция используется (в processor), а не где определена!
+    with patch("app.services.processor.call_llm", new_callable=AsyncMock) as mock_llm:
+        mock_llm.return_value = "Краткая суммаризация тестового текста."
+        
+        response = client.post("/api/v1/process", json={"text": "Это длинный текст для теста."})
+        
+        assert response.status_code == 200
+        data = response.json()
+        assert data["source"] in ["llm", "cache"]
+        assert "суммаризация" in data["result"].lower()
 
-def test_valid_request(mock_llm):
-    r = client.post("/api/v1/process", json={"text": "Это длинный текст, который нужно сократить для теста."})
-    assert r.status_code == 200
-    assert r.json()["source"] in ["llm", "cache"]
+@pytest.mark.asyncio
+async def test_validation_error():
+    """Тест валидации: текст короче 5 символов"""
+    response = client.post("/api/v1/process", json={"text": "аб"})
+    assert response.status_code == 422  # Pydantic validation error
 
-def test_validation_error():
-    r = client.post("/api/v1/process", json={"text": "ab"})
-    assert r.status_code == 422  # Pydantic validation
-
-def test_fallback_on_error():
-    with patch("app.services.llm_client.call_llm", side_effect=Exception("Network Down")):
-        r = client.post("/api/v1/process", json={"text": "Текст при сбое сети."})
-        assert r.status_code == 200
-        assert r.json()["source"] == "fallback"
+@pytest.mark.asyncio
+async def test_fallback_on_error():
+    """Тест fallback при ошибке вызова LLM"""
+    # Патчим там, где функция используется
+    with patch("app.services.processor.call_llm", new_callable=AsyncMock) as mock_llm:
+        # Имитируем падение сети
+        mock_llm.side_effect = Exception("Network Down")
+        
+        response = client.post("/api/v1/process", json={"text": "Текст при сбое сети."})
+        
+        assert response.status_code == 200  # Сервис не падает, а возвращает 200
+        data = response.json()
+        assert data["source"] == "fallback"
+        assert "недоступен" in data["result"]
